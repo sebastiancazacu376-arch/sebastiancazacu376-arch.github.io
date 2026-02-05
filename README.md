@@ -1,2 +1,0 @@
-# PonturiPariuriLive-
-Freee tips FOOTBALL
