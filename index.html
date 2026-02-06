@@ -1,14 +1,32 @@
-<!DOCTYPE html>
-<html lang="ro">
+<!DOCTYPE html><html lang="ro">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PonturiPariuriLive</title>
-<style>
-body { background: #121212; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; }
+<title>PonturiPariuriLive</title><style>
+body {
+  background: #121212;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+  padding: 20px;
+}
 h1 { font-size: 26px; color: #00e676; }
-input, button, select, textarea { margin: 8px; padding: 12px; width: 85%; max-width: 340px; border-radius: 12px; border: none; background: #1f1f1f; color: #fff; }
-button { background-color: #00e676; color: #000; font-weight: bold; cursor: pointer; }
+input, button, select, textarea {
+  margin: 8px;
+  padding: 12px;
+  width: 85%;
+  max-width: 340px;
+  border-radius: 12px;
+  border: none;
+  background: #1f1f1f;
+  color: #fff;
+}
+button {
+  background-color: #00e676;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+}
 button:hover { background-color: #00c853; transform: scale(1.05); }
 .section { background:#1e1e1e; margin:12px auto; padding:16px; border-radius:16px; max-width:500px; text-align:left; }
 .section img { max-width:100%; border-radius:12px; margin-top:10px; }
@@ -18,25 +36,13 @@ button:hover { background-color: #00c853; transform: scale(1.05); }
 #Cota2 { background:#0000ff; }
 .toggle-section { max-height:0; overflow:hidden; transition:max-height 0.5s ease; }
 .toggle-section.show { max-height:2000px; }
-</style>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-</head>
-<body>
-<h1>PonturiPariuriLive ⚽</h1>
-<h2>„Doar pasiunea ne mai unește”</h2>
-
-<div id="loginDiv">
-<input type="email" id="email" placeholder="Email"><br>
-<input type="password" id="password" placeholder="Parolă"><br>
-<button onclick="loginWithEmail()">🔑 Login</button><br>
-<button onclick="loginWithGoogle()">🔑 Login cu Google</button>
-</div>
-
-<p id="status"></p>
-
-<div id="adminPanel" style="display:none;">
+</style><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script></head>
+<body><h1>PonturiPariuriLive ⚽</h1>
+<h2>„Doar pasiunea ne mai unește”</h2><div id="loginDiv">
+  <input type="email" id="email" placeholder="Email"><br>
+  <input type="password" id="password" placeholder="Parolă"><br>
+  <button onclick="loginWithEmail()">🔑 Login</button><br>
+</div><p id="status"></p><div id="adminPanel" style="display:none;">
 <h3>Bun venit, Admin!</h3>
 <button onclick="logout()">🚪 Logout</button>
 <div>
@@ -51,13 +57,9 @@ button:hover { background-color: #00c853; transform: scale(1.05); }
 <input type="file" id="postImage"><br>
 <button onclick="publishPost()">✅ Publică</button>
 </div>
-</div>
-
-<div id="loader">🔄 Se încarcă postările...</div>
-<div id="postsContainer" style="margin-top:30px;"></div>
-
-<script>
-// Firebase Config cu cheia ta nouă
+</div><div id="loader">🔄 Se încarcă postările...</div>
+<div id="postsContainer" style="margin-top:30px;"></div><script>
+// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyDD71nL2jWbHZ4WphA2BVImANcJf-qjqzg",
   authDomain: "ponturipariurilive-f2373.firebaseapp.com",
@@ -68,38 +70,31 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-const auth=firebase.auth();
-const db=firebase.firestore();
-const adminUID="FTU0mCL4XIR4ZIsgBbkvLrHDDWZ2"; // pune UID-ul tău de admin aici
+const auth = firebase.auth();
+const db = firebase.firestore();
+const ADMIN_UID = "xBIXqXaLyoM4qfKQi7E3JR3Nzol1";
 
-const loginDiv=document.getElementById('loginDiv');
-const adminPanel=document.getElementById('adminPanel');
-const statusMsg=document.getElementById('status');
-const postsContainer=document.getElementById('postsContainer');
-const loader=document.getElementById('loader');
+const loginDiv = document.getElementById('loginDiv');
+const adminPanel = document.getElementById('adminPanel');
+const statusMsg = document.getElementById('status');
+const postsContainer = document.getElementById('postsContainer');
+const loader = document.getElementById('loader');
 
 function loginWithEmail(){
-  const email=document.getElementById('email').value;
-  const password=document.getElementById('password').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
   auth.signInWithEmailAndPassword(email,password)
-      .then(u=>checkAdmin(u.user))
-      .catch(()=>{statusMsg.innerText="⚠️ Email sau parolă greșită!";});
-}
-
-function loginWithGoogle(){
-  const provider=new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider)
-      .then(res=>checkAdmin(res.user))
-      .catch(e=>statusMsg.innerText="⚠️ Eroare: "+e.message);
+      .then(u => checkAdmin(u.user))
+      .catch(() => { statusMsg.innerText = "⚠️ Email sau parolă greșită!"; });
 }
 
 function checkAdmin(user){
-  if(user.uid===adminUID){
-    statusMsg.innerText="✅ Logare reușită!";
+  if(user.uid === ADMIN_UID){
+    statusMsg.innerText = "✅ Logare reușită!";
     loginDiv.style.display='none';
     adminPanel.style.display='block';
-  }else{
-    statusMsg.innerText="⛔ Nu ești admin!";
+  } else {
+    statusMsg.innerText = "⛔ Nu ești admin!";
     auth.signOut();
   }
 }
@@ -112,12 +107,12 @@ function logout(){
   });
 }
 
-auth.onAuthStateChanged(user=>{
-  if(user&&user.uid===adminUID){
+auth.onAuthStateChanged(user => {
+  if(user && user.uid === ADMIN_UID){
     loginDiv.style.display='none';
     adminPanel.style.display='block';
     statusMsg.innerText='✅ Bine ai revenit!';
-  }else{
+  } else {
     loginDiv.style.display='block';
     adminPanel.style.display='none';
   }
@@ -125,28 +120,27 @@ auth.onAuthStateChanged(user=>{
 
 const imgbbApiKey='58e3090d49428c99848c563a5a332fcc';
 async function uploadToImgbb(file){
-  const fd=new FormData();
-  fd.append('image',file);
-  const res=await fetch(`https://api.imgbb.com/1/upload?key=${imgbbApiKey}`,{method:'POST',body:fd});
-  const data=await res.json();
+  const fd = new FormData();
+  fd.append('image', file);
+  const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbApiKey}`,{method:'POST',body:fd});
+  const data = await res.json();
   return data.data.url;
 }
 
 async function publishPost(){
-  const t=document.getElementById('postTitle').value;
-  const c=document.getElementById('postContent').value;
-  const cat=document.getElementById('postCategory').value;
-  const file=document.getElementById('postImage').files[0];
-  if(!t||!c){alert('Completează titlul și conținutul!'); return;}
+  const t = document.getElementById('postTitle').value;
+  const c = document.getElementById('postContent').value;
+  const cat = document.getElementById('postCategory').value;
+  const file = document.getElementById('postImage').files[0];
+  if(!t || !c){ alert('Completează titlul și conținutul!'); return; }
   let imgURL='';
-  if(file && file.type.startsWith('image/')){ imgURL=await uploadToImgbb(file); } 
-  else if(file){ alert('Fișierul nu este imagine!'); return;}
+  if(file && file.type.startsWith('image/')){ imgURL = await uploadToImgbb(file); } 
+  else if(file){ alert('Fișierul nu este imagine!'); return; }
   
   await db.collection('posts').add({
     title:t, content:c, category:cat, imageURL:imgURL,
-    createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
-  
   document.getElementById('postTitle').value='';
   document.getElementById('postContent').value='';
   document.getElementById('postImage').value='';
@@ -158,12 +152,12 @@ function loadPosts(){
     const cats={Live:[],Azi:[],Cota2:[]};
     snap.forEach(doc=>{
       const p=doc.data();
-      const t=p.createdAt?p.createdAt.toDate().toLocaleString():'Necunoscut';
+      const t = p.createdAt ? p.createdAt.toDate().toLocaleString() : 'Necunoscut';
       const html=`<div class="section">
         <h3>${p.title}</h3>
         <p>${p.content}</p>
         <small>📅 ${t}</small><br>
-        ${p.imageURL?`<img src="${p.imageURL}">`:''}<br>
+        ${p.imageURL ? `<img src="${p.imageURL}">` : ''}<br>
         <button onclick="likePost('${doc.id}')">Like (${p.likes||0})</button>
         <button onclick="commentPost('${doc.id}')">Comment (${(p.comments||[]).length})</button>
         <button onclick="sharePost('${doc.id}')">Share (${p.shares||0})</button>
@@ -172,7 +166,7 @@ function loadPosts(){
       cats[p.category]?.push(html);
     });
     
-    postsContainer.innerHTML=
+    postsContainer.innerHTML =
       `<div class="category-title" id="Live" onclick="toggleCategory('liveSection')">📺 Ponturi Live</div>
       <div id="liveSection" class="toggle-section">${cats.Live.join('')||'<p>Nicio postare.</p>'}</div>
       <div class="category-title" id="Azi" onclick="toggleCategory('aziSection')">📅 Ponturi Azi</div>
@@ -185,18 +179,11 @@ function loadPosts(){
 }
 
 function toggleCategory(id){ document.getElementById(id).classList.toggle('show'); }
-function likePost(id){ db.collection('posts').doc(id).update({likes:firebase.firestore.FieldValue.increment(1)}); }
-function commentPost(id){
-  const c=prompt('Comentariu anonim:');
-  if(c){ db.collection('posts').doc(id).update({comments:firebase.firestore.FieldValue.arrayUnion(c)}); }
-}
-function sharePost(id){
-  alert('Distribuie acest link pe rețele sociale: '+window.location.href);
-  db.collection('posts').doc(id).update({shares:firebase.firestore.FieldValue.increment(1)});
-}
+function likePost(id){ db.collection('posts').doc(id).update({likes: firebase.firestore.FieldValue.increment(1)}); }
+function commentPost(id){ const c = prompt('Comentariu anonim:'); if(c){ db.collection('posts').doc(id).update({comments: firebase.firestore.FieldValue.arrayUnion(c)}); } }
+function sharePost(id){ alert('Distribuie acest link pe rețele sociale: '+window.location.href); db.collection('posts').doc(id).update({shares: firebase.firestore.FieldValue.increment(1)}); }
 function deletePost(id){ if(confirm('Ștergi această postare?')){ db.collection('posts').doc(id).delete(); } }
 
 loadPosts();
-</script>
-</body>
+</script></body>
 </html>
