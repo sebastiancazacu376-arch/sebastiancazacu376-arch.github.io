@@ -146,6 +146,7 @@ async function publishPost(){
   document.getElementById('postImage').value='';
 }
 
+// Load posts public for everyone
 function loadPosts(){
   loader.style.display='block';
   db.collection('posts').orderBy('createdAt','desc').onSnapshot(snap=>{
@@ -161,7 +162,7 @@ function loadPosts(){
         <button onclick="likePost('${doc.id}')">Like (${p.likes||0})</button>
         <button onclick="commentPost('${doc.id}')">Comment (${(p.comments||[]).length})</button>
         <button onclick="sharePost('${doc.id}')">Share (${p.shares||0})</button>
-        <button onclick="deletePost('${doc.id}')">🗑️ Șterge</button>
+        ${auth.currentUser && auth.currentUser.uid === ADMIN_UID ? `<button onclick="deletePost('${doc.id}')">🗑️ Șterge</button>` : ''}
       </div>`;
       cats[p.category]?.push(html);
     });
