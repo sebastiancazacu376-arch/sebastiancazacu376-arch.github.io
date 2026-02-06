@@ -3,30 +3,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PonturiPariuriLive</title><style>
-body {
-  background: #121212;
-  color: #e0e0e0;
-  font-family: 'Segoe UI', sans-serif;
-  text-align: center;
-  padding: 20px;
-}
+body { background: #121212; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; }
 h1 { font-size: 26px; color: #00e676; }
-input, button, select, textarea {
-  margin: 8px;
-  padding: 12px;
-  width: 85%;
-  max-width: 340px;
-  border-radius: 12px;
-  border: none;
-  background: #1f1f1f;
-  color: #fff;
-}
-button {
-  background-color: #00e676;
-  color: #000;
-  font-weight: bold;
-  cursor: pointer;
-}
+input, button, select, textarea { margin: 8px; padding: 12px; width: 85%; max-width: 340px; border-radius: 12px; border: none; background: #1f1f1f; color: #fff; }
+button { background-color: #00e676; color: #000; font-weight: bold; cursor: pointer; }
 button:hover { background-color: #00c853; transform: scale(1.05); }
 .section { background:#1e1e1e; margin:12px auto; padding:16px; border-radius:16px; max-width:500px; text-align:left; }
 .section img { max-width:100%; border-radius:12px; margin-top:10px; }
@@ -59,7 +39,6 @@ button:hover { background-color: #00c853; transform: scale(1.05); }
 </div>
 </div><div id="loader">🔄 Se încarcă postările...</div>
 <div id="postsContainer" style="margin-top:30px;"></div><script>
-// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyDD71nL2jWbHZ4WphA2BVImANcJf-qjqzg",
   authDomain: "ponturipariurilive-f2373.firebaseapp.com",
@@ -152,9 +131,9 @@ function loadPosts(){
   db.collection('posts').orderBy('createdAt','desc').onSnapshot(snap=>{
     const cats={Live:[],Azi:[],Cota2:[]};
     snap.forEach(doc=>{
-      const p=doc.data();
+      const p = doc.data();
       const t = p.createdAt ? p.createdAt.toDate().toLocaleString() : 'Necunoscut';
-      const html=`<div class="section">
+      const html = `<div class="section">
         <h3>${p.title}</h3>
         <p>${p.content}</p>
         <small>📅 ${t}</small><br>
@@ -166,14 +145,14 @@ function loadPosts(){
       </div>`;
       cats[p.category]?.push(html);
     });
-    
+
     postsContainer.innerHTML =
       `<div class="category-title" id="Live" onclick="toggleCategory('liveSection')">📺 Ponturi Live</div>
-      <div id="liveSection" class="toggle-section">${cats.Live.join('')||'<p>Nicio postare.</p>'}</div>
-      <div class="category-title" id="Azi" onclick="toggleCategory('aziSection')">📅 Ponturi Azi</div>
-      <div id="aziSection" class="toggle-section">${cats.Azi.join('')||'<p>Nicio postare.</p>'}</div>
-      <div class="category-title" id="Cota2" onclick="toggleCategory('cota2Section')">🎯 Cota 2</div>
-      <div id="cota2Section" class="toggle-section">${cats.Cota2.join('')||'<p>Nicio postare.</p>'}</div>`;
+       <div id="liveSection" class="toggle-section">${cats.Live.join('')||'<p>Nicio postare.</p>'}</div>
+       <div class="category-title" id="Azi" onclick="toggleCategory('aziSection')">📅 Ponturi Azi</div>
+       <div id="aziSection" class="toggle-section">${cats.Azi.join('')||'<p>Nicio postare.</p>'}</div>
+       <div class="category-title" id="Cota2" onclick="toggleCategory('cota2Section')">🎯 Cota 2</div>
+       <div id="cota2Section" class="toggle-section">${cats.Cota2.join('')||'<p>Nicio postare.</p>'}</div>`;
     
     loader.style.display='none';
   });
@@ -185,6 +164,7 @@ function commentPost(id){ const c = prompt('Comentariu anonim:'); if(c){ db.coll
 function sharePost(id){ alert('Distribuie acest link pe rețele sociale: '+window.location.href); db.collection('posts').doc(id).update({shares: firebase.firestore.FieldValue.increment(1)}); }
 function deletePost(id){ if(confirm('Ștergi această postare?')){ db.collection('posts').doc(id).delete(); } }
 
+// Show posts for everyone immediately
 loadPosts();
 </script></body>
 </html>
